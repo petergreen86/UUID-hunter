@@ -17,17 +17,17 @@ allComponentOriginUUID = []
 
 parser = argparse.ArgumentParser("Get components and UUIDs from specific project version BOM")
 parser.add_argument("--base-url", required=True, help="Hub server URL e.g. https://your.blackduck.url")
-parser.add_argument("--token-file", dest='token_file', required=True, help="containing access token")
+parser.add_argument("--api-key", dest='api_key', required=True, help="containing access token")
 parser.add_argument("--project", dest='project_name', required=True, help="Project that contains the BOM components")
 parser.add_argument("--version", dest='version_name', required=True, help="Version that contains the BOM components")
 parser.add_argument("--no-csv", dest='csv_file', action='store_false', help="Don't create a CSV and print results to screen only")
 parser.add_argument("--no-verify", dest='verify', action='store_false', help="disable TLS certificate verification")
 args = parser.parse_args()
 
-with open(args.token_file, 'r') as tf:
-    access_token = tf.readline().strip()
+# with open(args.token_file, 'r') as tf:
+#     access_token = tf.readline().strip()
 
-bd = Client(base_url=args.base_url, token=access_token, verify=args.verify)
+bd = Client(base_url=args.base_url, token=args.api_key, verify=args.verify)
     
 params = {
     'q': [f"name:{args.project_name}"]
@@ -57,6 +57,6 @@ for components in bd.get_resource('components', version):
 if args.csv_file:
     df = pd.DataFrame(list(zip(allComponentName, allComponentVerName, allComponentCompUUID, allComponentVersionUUID, allComponentOriginUUID)))
     df.columns = ['Component Name', 'Component Version Name', 'Component ID', 'Version ID', 'Origin ID']
-    df.to_csv(args.project_name + '_' + args.version_name + '_uuids.csv', index=False)
+    df.to_csv('/output/' + args.project_name + '_' + args.version_name + '_uuids.csv', index=False)
 else:
     pprint(list(zip(allComponentName, allComponentVerName, allComponentCompUUID, allComponentVersionUUID, allComponentOriginUUID)))
