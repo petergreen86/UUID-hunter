@@ -11,7 +11,7 @@ pip3 install -r requirements.txt
 
 ## Usage
 
-Create a file called `TOKENFILE` with an API key from your system
+Note: requires an API Token to work
 
 run the application
 
